@@ -5,7 +5,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
-from langchain.prompts import PromptTemplatest
+from langchain.prompts import PromptTemplate
 
 st.set_page_config(page_title="Document Genie", layout="wide")
 
@@ -18,7 +18,7 @@ This chatbot is built using the Retrieval-Augmented Generation (RAG) framework, 
 
 Follow these simple steps to interact with the chatbot:
 
-1. **Enter Your API Key**: You'll need a Google API key for the chatbot to access Google's Generative AI models. Obtain your API key [here](https://makersuite.google.com/app/apikey).
+1. **Enter Your API Key**: You'll need a Google API key for the chatbot to access Google's Generative AI models. Obtain your API key here.
 
 2. **Upload Your Documents**: The system accepts multiple PDF files at once, analyzing the content to provide comprehensive insights.
 
