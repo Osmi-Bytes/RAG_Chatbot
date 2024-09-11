@@ -2,12 +2,10 @@ import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-import google.generativeai as genai
 from langchain.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
-from langchain.prompts import PromptTemplate
-import os
+from langchain.prompts import PromptTemplatest
 
 st.set_page_config(page_title="Document Genie", layout="wide")
 
@@ -20,17 +18,12 @@ This chatbot is built using the Retrieval-Augmented Generation (RAG) framework, 
 
 Follow these simple steps to interact with the chatbot:
 
-1. **Enter Your API Key**: You'll need a Google API key for the chatbot to access Google's Generative AI models. Obtain your API key https://makersuite.google.com/app/apikey.
+1. **Enter Your API Key**: You'll need a Google API key for the chatbot to access Google's Generative AI models. Obtain your API key [here](https://makersuite.google.com/app/apikey).
 
 2. **Upload Your Documents**: The system accepts multiple PDF files at once, analyzing the content to provide comprehensive insights.
 
 3. **Ask a Question**: After processing the documents, ask any question related to the content of your uploaded documents for a precise answer.
 """)
-
-
-
-# This is the first API key input; no need to repeat it in the main function.
-api_key = st.text_input("Enter your Google API Key:", type="password", key="api_key_input")
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -50,7 +43,7 @@ def get_vector_store(text_chunks, api_key):
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
-def get_conversational_chain():
+def get_conversational_chain(api_key):
     prompt_template = """
     Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
     provided context just say, "answer is not available in the context", don't provide the wrong answer\n\n
@@ -68,12 +61,14 @@ def user_input(user_question, api_key):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
     new_db = FAISS.load_local("faiss_index", embeddings)
     docs = new_db.similarity_search(user_question)
-    chain = get_conversational_chain()
+    chain = get_conversational_chain(api_key)
     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
     st.write("Reply: ", response["output_text"])
 
 def main():
     st.header("AI clone chatbot💁")
+
+    api_key = st.text_input("Enter your Google API Key:", type="password", key="api_key_input")
 
     user_question = st.text_input("Ask a Question from the PDF Files", key="user_question")
 
